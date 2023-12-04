@@ -30,8 +30,10 @@ const contactsSlice = createSlice({
         };
       },
     },
-    updateContacts(state, action) {
-      state.contact = action.payload;
+    deleteContacts(state, action) {
+      state.contact = state.contact.filter(
+        contact => contact.id !== action.payload
+      );
     },
   },
 });
@@ -47,8 +49,6 @@ export const rootReducer = combineReducers({
   filters: filterReducer,
 });
 
-
-
 export const persistedReducer = persistReducer(persistConfig, rootReducer);
 export const getContacts = state => state.contacts.contact;
-export const { addContacts, updateContacts } = contactsSlice.actions;
+export const { addContacts, deleteContacts } = contactsSlice.actions;

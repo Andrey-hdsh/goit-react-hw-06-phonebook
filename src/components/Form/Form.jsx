@@ -1,9 +1,14 @@
 import { Formik, Field} from 'formik';
 import { FormStyled, ErrorMsg } from './form.styled';
 import * as Yup from 'yup';
+import { useDispatch, useSelector } from 'react-redux';
+import { getContacts , addContacts } from 'redux/slice/contactsSlice';
 
 
-export const ContactForm = ({ hundleContact }) => {
+export const ContactForm = () => {
+
+  const contacts = useSelector(getContacts);
+  const dispatch = useDispatch();
 
   const yupValidation = Yup.object().shape({
   name: Yup.string()
@@ -15,7 +20,19 @@ export const ContactForm = ({ hundleContact }) => {
     .min(5, 'Phone number must be at least 5 characters')
     .max(20, 'Phone number must be 20 characters or less')
     .required('Phone number is required'),
-});
+  });
+  
+const handleNewContact = ({ name, number }) => {
+    if (contacts.some(contact => contact.name === name)) {
+      alert(`${name} is already in contacts`);
+      return;
+    } else if (contacts.some(contact => contact.number === number)) {
+      alert(`${number} is already in contacts`);
+      return;
+    }
+    dispatch(addContacts(name, number));
+  };
+
   return (
     <Formik
       initialValues={{
@@ -24,7 +41,7 @@ export const ContactForm = ({ hundleContact }) => {
       }}
     validationSchema={yupValidation}
       onSubmit={(values, actions) => {
-        hundleContact(values);
+        handleNewContact(values);
         actions.resetForm();
       }}
     >
