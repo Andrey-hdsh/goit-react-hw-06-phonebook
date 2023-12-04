@@ -1,14 +1,16 @@
 import { ContactForm } from '../Form/Form';
 import { Filter } from '../Filter/Filter';
 import { ContactList } from '../List/List';
-import { useDispatch, useSelector } from 'react-redux';
 
-import { newContact , updateContacts } from 'redux/contactsSlice';
-import { setFilter } from 'redux/filtersSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContacts, updateContacts, getContacts } from 'redux/slice/contactsSlice';
+import { setFilter , getFilter } from 'redux/slice/filtersSlice';
+
 
 export const SectionFormContacts = () => {
-  const contacts = useSelector(state => state.contacts.contacts);
-  const filters = useSelector(state => state.filters.filters);
+
+  const contacts = useSelector(getContacts);
+  const filters = useSelector(getFilter);
   const dispatch = useDispatch();
 
   const handleNewContact = ({ name, number }) => {
@@ -19,8 +21,7 @@ export const SectionFormContacts = () => {
       alert(`${number} is already in contacts`);
       return;
     }
-
-    dispatch(newContact(name, number));
+    dispatch(addContacts(name, number));
   };
 
   const handleFilterContacts = value => {
@@ -33,7 +34,6 @@ export const SectionFormContacts = () => {
   };
 
   const textContactsFilter = filters.toLowerCase();
-  console.log(textContactsFilter);
   const filteredContacts = contacts.filter(contact => {
     return contact.name.toLowerCase().includes(textContactsFilter);
   });
